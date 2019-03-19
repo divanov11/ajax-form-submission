@@ -1,0 +1,63 @@
+{% load static %}
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<h3>Customers</h3>
+
+<form id="form" method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{form}}
+	<input type="submit" value="Create Customer" />
+</form>
+
+<hr>
+
+<div id="customers"></div>
+
+<script>
+	function loadCustomers(){
+		$('.customer-div').remove()
+		var url = '/api/'
+		$.ajax({
+				method:"GET",
+				url:url,
+				success:function(response){
+					console.log(response)
+					var rows
+					for (i in response) {
+					rows += `
+							<div class="customer-div">
+								<p>${response[i].name}</p>
+								<img class="logo" src="${response[i].picture}"/>
+								<hr>
+							</div>
+							 `
+					}
+					$('#customers').append(rows)
+				}
+			})
+		}
+
+	//window.onload = loadCustomers()
+
+	$('#form').submit(function(e){
+		e.preventDefault()
+		var url = window.location
+		data = $(this).serialize()
+		var formData = new FormData(data);
+		console.log('Data: ', data)
+		//console.log('Form',this.picture)
+		var form = this.picture;
+		var formData = new FormData(this);
+		console.log('Form:', form)
+		console.log('formData: ', formData)
+
+		$.ajax({
+			method: "POST",
+			url: url,
+			data:data,	
+			success:function(){	
+			//loadCustomers()	
+			}
+		});	
+	})
+</script>
